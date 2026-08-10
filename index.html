@@ -1,0 +1,1812 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raio-X do seu Evento Cristão</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16241f;
+    --paper:#f4efe4;
+    --paper-2:#ece4d2;
+    --petrol:#0f3b3a;
+    --petrol-2:#16524f;
+    --amber:#c8862b;
+    --amber-bright:#e0a23d;
+    --film:#0a2120;
+    --line:rgba(15,59,58,0.18);
+    --crit:#a3402f;
+    --dev:#c8862b;
+    --maturo:#2f6b4f;
+    --shadow: 0 18px 40px rgba(10,33,32,0.18);
+    --radius: 2px;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 12% 8%, rgba(200,134,43,0.10), transparent 45%),
+      radial-gradient(circle at 88% 92%, rgba(22,82,79,0.10), transparent 50%),
+      var(--paper);
+    color:var(--ink);
+    font-family:'Source Sans 3', sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .stage{
+    max-width:760px;
+    margin:0 auto;
+    padding:32px 20px 80px;
+  }
+
+  /* ---------- Topbar / progress ---------- */
+  .topbar{
+    position:sticky;
+    top:0;
+    z-index:40;
+    background:linear-gradient(180deg, var(--paper) 78%, transparent);
+    padding:14px 0 18px;
+  }
+  .topbar-inner{
+    max-width:760px;
+    margin:0 auto;
+    padding:0 20px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .brand-mark{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.14em;
+    color:var(--petrol);
+    text-transform:uppercase;
+    white-space:nowrap;
+    opacity:0.75;
+  }
+  .progress-track{
+    flex:1;
+    height:3px;
+    background:var(--line);
+    position:relative;
+    overflow:hidden;
+  }
+  .progress-fill{
+    position:absolute;
+    inset:0 auto 0 0;
+    width:0%;
+    background:linear-gradient(90deg, var(--petrol), var(--amber));
+    transition:width 0.5s cubic-bezier(.65,0,.35,1);
+  }
+  .progress-pct{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--petrol);
+    opacity:0.75;
+    min-width:32px;
+    text-align:right;
+  }
+
+  /* ---------- Screens ---------- */
+  .screen{display:none;}
+  .screen.active{display:block; animation:rise 0.5s cubic-bezier(.2,.8,.2,1);}
+  @keyframes rise{
+    from{opacity:0; transform:translateY(14px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+
+  /* ---------- Intro ---------- */
+  .intro-eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--amber);
+    background:var(--film);
+    display:inline-block;
+    padding:6px 12px;
+    margin-bottom:22px;
+  }
+  .intro-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(34px, 7vw, 58px);
+    line-height:1.04;
+    letter-spacing:-0.01em;
+    margin:0 0 18px;
+    color:var(--film);
+  }
+  .intro-title em{
+    font-style:italic;
+    color:var(--amber);
+  }
+  .intro-sub{
+    font-size:18px;
+    line-height:1.55;
+    color:rgba(22,36,31,0.78);
+    max-width:54ch;
+    margin:0 0 30px;
+  }
+  .intro-meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 28px;
+    margin:0 0 36px;
+    padding:18px 0;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .meta-item{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--petrol);
+  }
+  .meta-item b{
+    display:block;
+    font-family:'Fraunces', serif;
+    font-size:22px;
+    font-weight:600;
+    color:var(--film);
+    margin-bottom:2px;
+  }
+
+  .film-strip{
+    display:flex;
+    gap:6px;
+    margin:0 0 36px;
+  }
+  .film-strip span{
+    flex:1;
+    height:34px;
+    border:1px solid var(--line);
+    background:repeating-linear-gradient(90deg, var(--paper-2), var(--paper-2) 8px, transparent 8px, transparent 16px);
+    position:relative;
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn{
+    font-family:'Source Sans 3', sans-serif;
+    font-weight:600;
+    font-size:16px;
+    border:none;
+    cursor:pointer;
+    padding:16px 30px;
+    border-radius:var(--radius);
+    transition:transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+  }
+  .btn-primary{
+    background:var(--film);
+    color:var(--paper);
+  }
+  .btn-primary:hover{
+    background:var(--petrol-2);
+    transform:translateY(-1px);
+    box-shadow:var(--shadow);
+  }
+  .btn-primary:active{transform:translateY(0);}
+  .btn-primary:disabled{
+    opacity:0.35;
+    cursor:not-allowed;
+    transform:none;
+    box-shadow:none;
+  }
+  .btn-ghost{
+    background:transparent;
+    color:var(--petrol);
+    padding:14px 6px;
+    text-decoration:underline;
+    text-decoration-color:var(--line);
+    text-underline-offset:5px;
+  }
+  .btn-ghost:hover{color:var(--film);}
+
+  .nav-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-top:34px;
+  }
+
+  /* ---------- Section divider (axis intro) ---------- */
+  .axis-tag{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--petrol);
+    opacity:0.7;
+    margin-bottom:10px;
+  }
+  .axis-tag b{color:var(--amber); opacity:1;}
+
+  /* ---------- Question ---------- */
+  .q-kicker{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--amber);
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    margin-bottom:14px;
+  }
+  .q-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(24px, 4.4vw, 32px);
+    line-height:1.22;
+    color:var(--film);
+    margin:0 0 28px;
+    max-width:30ch;
+  }
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .option{
+    text-align:left;
+    background:rgba(255,255,255,0.5);
+    border:1px solid var(--line);
+    padding:18px 20px;
+    cursor:pointer;
+    font-size:16px;
+    line-height:1.5;
+    color:var(--ink);
+    display:flex;
+    align-items:flex-start;
+    gap:14px;
+    transition:border-color 0.18s ease, background 0.18s ease, transform 0.12s ease;
+    position:relative;
+  }
+  .option:hover{
+    border-color:var(--amber);
+    background:rgba(255,255,255,0.85);
+    transform:translateX(2px);
+  }
+  .option.selected{
+    border-color:var(--film);
+    background:var(--film);
+    color:var(--paper);
+  }
+  .option-dot{
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    border:1.5px solid var(--petrol);
+    flex-shrink:0;
+    margin-top:5px;
+    transition:background 0.18s ease, border-color 0.18s ease;
+  }
+  .option.selected .option-dot{
+    background:var(--amber-bright);
+    border-color:var(--amber-bright);
+  }
+
+  textarea.text-input{
+    width:100%;
+    font-family:'Source Sans 3', sans-serif;
+    font-size:17px;
+    padding:18px 20px;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,0.6);
+    color:var(--ink);
+    resize:vertical;
+    min-height:110px;
+    line-height:1.5;
+  }
+  textarea.text-input:focus, input.text-input:focus{
+    outline:2px solid var(--amber);
+    outline-offset:2px;
+    border-color:var(--film);
+  }
+
+  /* ---------- Lead capture ---------- */
+  .lead-card{
+    background:var(--film);
+    color:var(--paper);
+    padding:44px 36px;
+    position:relative;
+    overflow:hidden;
+  }
+  .lead-card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      repeating-linear-gradient(90deg, rgba(224,162,61,0.06) 0 1px, transparent 1px 38px);
+    pointer-events:none;
+  }
+  .lead-card .axis-tag{color:var(--amber); opacity:0.9;}
+  .lead-title{
+    font-family:'Fraunces', serif;
+    font-size:clamp(26px, 4.8vw, 34px);
+    font-weight:600;
+    margin:0 0 12px;
+    line-height:1.18;
+  }
+  .lead-sub{
+    color:rgba(244,239,228,0.72);
+    font-size:16px;
+    line-height:1.55;
+    margin:0 0 30px;
+    max-width:48ch;
+  }
+  .field{
+    margin-bottom:18px;
+  }
+  .field label{
+    display:block;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--amber-bright);
+    margin-bottom:8px;
+  }
+  .field input{
+    width:100%;
+    font-family:'Source Sans 3', sans-serif;
+    font-size:17px;
+    padding:14px 16px;
+    background:rgba(244,239,228,0.06);
+    border:1px solid rgba(244,239,228,0.28);
+    color:var(--paper);
+  }
+  .field input::placeholder{color:rgba(244,239,228,0.35);}
+  .field input:focus{
+    outline:none;
+    border-color:var(--amber-bright);
+    background:rgba(244,239,228,0.1);
+  }
+  .field-error{
+    font-size:12.5px;
+    color:#e6906f;
+    margin-top:6px;
+    display:none;
+  }
+  .field.invalid input{border-color:#e6906f;}
+  .field.invalid .field-error{display:block;}
+  .lead-privacy{
+    font-size:12.5px;
+    color:rgba(244,239,228,0.45);
+    margin-top:18px;
+    line-height:1.5;
+  }
+
+  /* ---------- Results ---------- */
+  .result-header{
+    text-align:center;
+    margin-bottom:8px;
+  }
+  .profile-card{
+    background:var(--film);
+    color:var(--paper);
+    padding:48px 32px;
+    margin:24px 0 40px;
+    position:relative;
+  }
+  .profile-eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--amber);
+    margin-bottom:16px;
+  }
+  .profile-name{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:clamp(28px, 6vw, 42px);
+    line-height:1.08;
+    margin:0 0 20px;
+  }
+  .profile-desc{
+    font-size:17px;
+    line-height:1.6;
+    color:rgba(244,239,228,0.82);
+    margin:0 0 24px;
+    max-width:58ch;
+  }
+  .profile-symptoms{
+    list-style:none;
+    margin:0;
+    padding:0;
+    border-top:1px solid rgba(244,239,228,0.18);
+    padding-top:20px;
+  }
+  .profile-symptoms li{
+    font-size:15px;
+    line-height:1.6;
+    color:rgba(244,239,228,0.78);
+    padding-left:20px;
+    position:relative;
+    margin-bottom:10px;
+  }
+  .profile-symptoms li::before{
+    content:"—";
+    position:absolute;
+    left:0;
+    color:var(--amber);
+  }
+
+  .axes-grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    margin-bottom:40px;
+  }
+  .axis-row{
+    background:var(--paper);
+    padding:18px 20px;
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    align-items:center;
+    gap:16px;
+    cursor:pointer;
+  }
+  .axis-row-num{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--petrol);
+    opacity:0.55;
+  }
+  .axis-row-name{
+    font-family:'Fraunces', serif;
+    font-size:17px;
+    font-weight:600;
+    color:var(--film);
+  }
+  .axis-row-status{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    padding:5px 10px;
+    white-space:nowrap;
+  }
+  .status-critico{background:rgba(163,64,47,0.12); color:var(--crit);}
+  .status-desenvolvimento{background:rgba(200,134,43,0.14); color:var(--dev);}
+  .status-maduro{background:rgba(47,107,79,0.14); color:var(--maturo);}
+
+  .axis-detail{
+    grid-column:1 / -1;
+    display:none;
+    padding-top:16px;
+    margin-top:4px;
+    border-top:1px dashed var(--line);
+  }
+  .axis-row.open .axis-detail{display:block;}
+  .axis-row.open .chev{transform:rotate(90deg);}
+  .chev{
+    font-family:'JetBrains Mono', monospace;
+    color:var(--petrol);
+    transition:transform 0.2s ease;
+    opacity:0.5;
+  }
+  .axis-detail p{
+    font-size:15px;
+    line-height:1.6;
+    color:rgba(22,36,31,0.78);
+    margin:0 0 14px;
+  }
+  .plan-table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:8px;
+    font-size:14px;
+  }
+  .plan-table th{
+    text-align:left;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--petrol);
+    opacity:0.65;
+    padding:0 12px 8px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .plan-table td{
+    padding:12px 12px 12px 0;
+    border-bottom:1px solid var(--line);
+    vertical-align:top;
+    line-height:1.5;
+    color:var(--ink);
+  }
+  .plan-table tr:last-child td{border-bottom:none;}
+  .plan-table td:first-child{font-weight:600; width:26%;}
+  .plan-table td:nth-child(3){color:var(--petrol); width:24%; font-size:13.5px;}
+
+  .section-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--petrol);
+    opacity:0.7;
+    margin:0 0 16px;
+  }
+
+  .footer-note{
+    text-align:center;
+    margin-top:60px;
+    padding-top:24px;
+    border-top:1px solid var(--line);
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px;
+    color:var(--petrol);
+    opacity:0.55;
+  }
+
+  @media (max-width:560px){
+    .stage{padding:24px 16px 60px;}
+    .lead-card{padding:32px 22px;}
+    .profile-card{padding:34px 22px;}
+    .axis-row{grid-template-columns:1fr auto; row-gap:8px;}
+    .axis-row-num{display:none;}
+    .plan-table, .plan-table thead, .plan-table tbody, .plan-table th, .plan-table td, .plan-table tr{display:block;}
+    .plan-table thead{display:none;}
+    .plan-table tr{margin-bottom:16px; border-bottom:1px solid var(--line); padding-bottom:10px;}
+    .plan-table td{border-bottom:none; padding:3px 0;}
+    .plan-table td:first-child{font-family:'JetBrains Mono', monospace; font-size:11px; text-transform:uppercase; color:var(--amber); opacity:0.9; width:auto;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .screen.active{animation:none;}
+    .progress-fill{transition:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <span class="brand-mark">Raio-X · Evento Cristão</span>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <span class="progress-pct" id="progressPct">0%</span>
+  </div>
+</div>
+
+<div class="stage" id="stage">
+  <!-- Screens injected by JS -->
+</div>
+
+<script>
+// ============================================================
+// RAIO-X DO SEU EVENTO CRISTÃO — dados extraídos do material
+// ============================================================
+
+const AXES = [
+  { id: "proposito", name: "Propósito & Visão", short: "Propósito" },
+  { id: "comunicacao", name: "Comunicação & Divulgação", short: "Comunicação" },
+  { id: "experiencia", name: "Experiência & Estrutura Física", short: "Experiência" },
+  { id: "equipe", name: "Equipe & Operação", short: "Equipe" },
+  { id: "tecnologia", name: "Tecnologia, Som & Produção", short: "Tecnologia" },
+  { id: "orcamento", name: "Orçamento & Recursos", short: "Orçamento" },
+  { id: "conversao", name: "Conversão & Pós-evento", short: "Conversão" },
+  { id: "lideranca", name: "Liderança & Espiritualidade do Evento", short: "Liderança" },
+];
+
+// Pontuação: alternativa[0] = 3 pts, alternativa[1] = 2 pts, alternativa[2] = 1 pt
+const QUESTIONS = [
+  // ---- abertura (sem pontuação) ----
+  {
+    type: "text",
+    id: "open1",
+    axis: null,
+    title: "Em uma palavra, como você descreveria o último evento que sua igreja organizou?",
+    placeholder: "Escreva aqui...",
+  },
+  {
+    type: "choice",
+    id: "context1",
+    axis: null,
+    scored: false,
+    title: "Há quanto tempo vocês organizam eventos assim?",
+    options: [
+      "É nosso primeiro evento grande",
+      "Já fizemos alguns, mas sem muita constância",
+      "Já é tradição, fazemos isso há anos",
+    ],
+  },
+
+  // ---- Eixo 1 — Propósito & Visão ----
+  {
+    type: "choice", axis: "proposito",
+    title: "Se seu evento fosse um culto, ele seria mais parecido com...",
+    options: [
+      "Uma liturgia bem ensaiada (cada minuto tem um propósito)",
+      "Um avivamento espontâneo (sabemos o que queremos, mas vai do jeito que Deus quiser)",
+      "Uma reunião de última hora (genuinamente não sabemos o que vai acontecer)",
+    ],
+  },
+  {
+    type: "choice", axis: "proposito",
+    title: "Quando alguém pergunta “qual o objetivo desse evento?”, a resposta da equipe é...",
+    options: [
+      "Uma frase só, todo mundo fala igual",
+      "Cada um dá uma resposta diferente",
+      "Um silêncio constrangedor seguido de “...adorar a Deus, né?”",
+    ],
+  },
+  {
+    type: "choice", axis: "proposito",
+    title: "O público-alvo do seu evento é...",
+    options: [
+      "Muito claro: sabemos exatamente quem queremos alcançar",
+      "Meio genérico: “é pra todo mundo”",
+      "Nunca paramos pra pensar nisso",
+    ],
+  },
+
+  // ---- Eixo 2 — Comunicação & Divulgação ----
+  {
+    type: "choice", axis: "comunicacao",
+    title: "Sua divulgação de evento se parece mais com...",
+    options: [
+      "Netflix: trailer, teaser, contagem regressiva",
+      "Rádio AM: uma vez no grupo do WhatsApp e pronto",
+      "Telefone sem fio: alguém espalha, ninguém confere",
+    ],
+  },
+  {
+    type: "choice", axis: "comunicacao",
+    title: "Se seu evento fosse posto à prova num feed do Instagram, ele teria...",
+    options: [
+      "Conteúdo toda semana, stories, bastidores",
+      "Um post de capa e um story no dia",
+      "Foto tirada de última hora, com o flash estourado",
+    ],
+  },
+  {
+    type: "choice", axis: "comunicacao",
+    title: "Quando alguém pergunta “como fico sabendo dos próximos eventos de vocês?”, você responde...",
+    options: [
+      "Tem um canal fixo (WhatsApp, app, newsletter) e a pessoa nunca perde nada",
+      "Depende da sorte de ver o post no feed",
+      "Honestamente, nem a gente sabe direito",
+    ],
+  },
+
+  // ---- Eixo 3 — Experiência & Estrutura Física ----
+  {
+    type: "choice", axis: "experiencia",
+    title: "No dia do evento, o público geralmente sente que...",
+    options: [
+      "Foi cuidado em cada detalhe, do estacionamento ao café",
+      "Foi bom, mas meio corrido e improvisado",
+      "Ficou perdido sobre onde sentar, o que vai acontecer e quando acaba",
+    ],
+  },
+  {
+    type: "choice", axis: "experiencia",
+    title: "Se seu evento fosse um restaurante, seria...",
+    options: [
+      "Um buffet bem servido, com cardápio definido",
+      "Um fast-food: rápido, ok, mas sem encantar",
+      "Aquele lugar que demora, erra o pedido e ainda fica sem mesa",
+    ],
+  },
+  {
+    type: "choice", axis: "experiencia",
+    title: "A sinalização e acolhimento de quem chega pela primeira vez é...",
+    options: [
+      "Impecável: tem gente na porta, placas, recepção treinada",
+      "Existe, mas só se alguém lembrar de fazer",
+      "Inexistente: a pessoa se vira sozinha",
+    ],
+  },
+  {
+    type: "choice", axis: "experiencia",
+    title: "O tempo de duração do seu evento costuma...",
+    options: [
+      "Bater exatamente com o planejado",
+      "Estourar um pouco, mas sem ninguém notar muito",
+      "Virar uma maratona que cansa até a equipe",
+    ],
+  },
+
+  // ---- Eixo 4 — Equipe & Operação ----
+  {
+    type: "choice", axis: "equipe",
+    title: "Sua equipe de bastidores no dia do evento está mais para...",
+    options: [
+      "Time olímpico: cada um sabe exatamente sua função",
+      "Mutirão: todo mundo ajuda em tudo, meio sem dono",
+      "Última hora: “quem que ficou de trazer o microfone?!”",
+    ],
+  },
+  {
+    type: "choice", axis: "equipe",
+    title: "Quando algo dá errado no meio do evento (e sempre dá), a equipe...",
+    options: [
+      "Resolve discretamente, ninguém na plateia percebe",
+      "Resolve, mas todo mundo vê o sufoco",
+      "Trava, e o evento para até alguém decidir o que fazer",
+    ],
+  },
+  {
+    type: "choice", axis: "equipe",
+    title: "Existe um briefing ou reunião antes do evento com a equipe?",
+    options: [
+      "Sim, sempre, com a função de cada um documentada",
+      "Às vezes, de forma bem informal",
+      "Não, cada um já sabe (ou acha que sabe) o que fazer",
+    ],
+  },
+
+  // ---- Eixo 5 — Tecnologia, Som & Produção ----
+  {
+    type: "choice", axis: "tecnologia",
+    title: "O som e a estrutura técnica do seu evento normalmente...",
+    options: [
+      "Funcionam perfeitamente, com teste prévio",
+      "Funcionam, mas sempre tem um perrengue de última hora",
+      "São a parte que mais gera estresse na equipe",
+    ],
+  },
+  {
+    type: "choice", axis: "tecnologia",
+    title: "Vocês registram o evento (fotos, vídeo, transmissão)?",
+    options: [
+      "Sim, com equipe dedicada e uso posterior do material",
+      "Alguém tira foto no celular, sem muito planejamento",
+      "Não registramos, e depois nos arrependemos",
+    ],
+  },
+
+  // ---- Eixo 6 — Orçamento & Recursos ----
+  {
+    type: "choice", axis: "orcamento",
+    title: "O orçamento do seu evento normalmente...",
+    options: [
+      "É planejado com antecedência e cumprido",
+      "É decidido meio que no improviso, conforme a necessidade",
+      "Estoura, e ninguém sabe muito bem para onde foi o dinheiro",
+    ],
+  },
+  {
+    type: "choice", axis: "orcamento",
+    title: "Se precisasse descrever a captação de recursos para o evento, ela é...",
+    options: [
+      "Estruturada: temos fontes definidas (oferta, parcerias, inscrição)",
+      "Aleatória: vamos vendo o que aparece",
+      "Inexistente: tiramos do caixa geral e torcemos",
+    ],
+  },
+
+  // ---- Eixo 7 — Conversão & Pós-evento ----
+  {
+    type: "choice", axis: "conversao",
+    title: "Quem visita pela primeira vez seu evento, geralmente...",
+    options: [
+      "Recebe um contato depois, é convidado a voltar, é acompanhado",
+      "Vai embora com uma boa impressão, mas sem nenhum follow-up",
+      "Some, e a gente nem sabe se ele veio mesmo",
+    ],
+  },
+  {
+    type: "choice", axis: "conversao",
+    title: "Se você pudesse medir o sucesso do seu evento por um número, qual seria?",
+    options: [
+      "Quantas vidas decidiram seguir a Cristo / se conectaram à igreja",
+      "Quantas pessoas apareceram",
+      "Sinceramente, a gente não mede nada",
+    ],
+  },
+  {
+    type: "choice", axis: "conversao",
+    title: "Depois do evento, os dados de quem participou (contato, decisão, interesse)...",
+    options: [
+      "Ficam registrados num sistema/planilha e são usados depois",
+      "Ficam em alguma lista perdida, sem uso real",
+      "Não existem, nunca coletamos isso",
+    ],
+  },
+
+  // ---- Eixo 8 — Liderança & Espiritualidade do Evento ----
+  {
+    type: "choice", axis: "lideranca",
+    title: "A liderança/pastor acompanha o evento...",
+    options: [
+      "De perto, desde o planejamento até a execução",
+      "Só no dia, dando uma força pontual",
+      "Praticamente delega tudo e some",
+    ],
+  },
+  {
+    type: "choice", axis: "lideranca",
+    title: "Antes do evento, a equipe costuma...",
+    options: [
+      "Orar e se preparar espiritualmente junto, não só operacionalmente",
+      "Focar só na logística, a oração fica em segundo plano",
+      "Não há nenhum momento espiritual preparatório com a equipe",
+    ],
+  },
+  {
+    type: "choice", axis: "lideranca",
+    title: "Depois do evento, sua equipe costuma fazer...",
+    options: [
+      "Reunião de avaliação com aprendizados anotados",
+      "Um “ufa, deu tudo certo” e seguimos a vida",
+      "Nada — já estamos pensando no próximo evento",
+    ],
+  },
+
+  // ---- Fechamento ----
+  {
+    type: "text",
+    id: "open2",
+    axis: null,
+    title: "Pra fechar: qual é o maior medo que você tem em relação ao próximo evento da sua igreja?",
+    placeholder: "Escreva aqui...",
+  },
+  {
+    type: "choice",
+    id: "qualify",
+    axis: null,
+    scored: false,
+    title: "Se esse diagnóstico te desse UMA dica certeira agora, em qual área você mais gostaria de receber ajuda?",
+    options: [
+      "Comunicação e divulgação",
+      "Estrutura e equipe no dia do evento",
+      "Conversão e retenção de visitantes",
+      "Orçamento e recursos",
+      "Tudo um pouco, sinceramente",
+    ],
+  },
+];
+
+// ============================================================
+// MINI RAIO-X POR EIXO (3 níveis cada)
+// ============================================================
+
+const AXIS_DIAGNOSIS = {
+  proposito: {
+    critico: {
+      label: "Crítico",
+      headline: "Seu evento ainda não sabe muito bem por que existe.",
+      body: "Isso é mais comum do que parece — muitas equipes vivem no piloto automático, repetindo o calendário do ano anterior sem perguntar “por quê”.",
+      symptoms: [
+        "A equipe dá respostas diferentes quando perguntada sobre o objetivo do evento",
+        "O público-alvo nunca foi definido com clareza",
+        "O evento “acontece” mais por tradição do que por propósito",
+      ],
+      plan: [
+        ["Defina UMA frase de propósito para o evento", "Reúna a liderança e responda: “se este evento não existisse, o que faltaria na vida das pessoas?”. Transforme a resposta em uma frase única.", "Antes de qualquer outra decisão — idealmente 60 dias antes do evento"],
+        ["Mapeie o público-alvo prioritário", "Descreva em 3 frases quem é a pessoa que você mais quer alcançar (idade, momento de vida, relação com a fé)", "Na mesma reunião de definição de propósito"],
+        ["Alinhe a frase de propósito com toda a equipe", "Compartilhe a frase em um documento curto e repita-a no briefing pré-evento", "1 semana antes do evento"],
+      ],
+    },
+    desenvolvimento: {
+      label: "Em Desenvolvimento",
+      headline: "Existe uma ideia de propósito, mas ela não está clara o suficiente.",
+      body: "Falta clareza para guiar as decisões no dia a dia da organização.",
+      symptoms: [
+        "A liderança sabe o objetivo, mas a equipe operacional não repete a mesma coisa",
+        "O público-alvo é genérico (“pra todo mundo”)",
+        "Decisões de planejamento são tomadas sem checar se servem ao propósito",
+      ],
+      plan: [
+        ["Documente o propósito por escrito", "Escreva 1 parágrafo curto com objetivo, público-alvo e resultado esperado do evento", "Antes de iniciar a divulgação"],
+        ["Use o propósito como filtro de decisão", "Em cada reunião de planejamento, pergunte: “isso serve ao nosso propósito?” antes de aprovar uma ação", "Em todas as reuniões de planejamento"],
+      ],
+    },
+    maduro: {
+      label: "Maduro",
+      headline: "Seu evento tem propósito claro e compartilhado.",
+      body: "Esse é um dos maiores diferenciais de eventos que realmente transformam vidas.",
+      symptoms: [
+        "Toda a equipe consegue explicar o objetivo do evento com as mesmas palavras",
+        "O público-alvo é específico e orienta a linguagem, o formato e a divulgação",
+      ],
+      plan: [
+        ["Revise o propósito a cada edição", "Antes de repetir o evento, pergunte se o propósito ainda é o mais relevante para o momento da igreja/comunidade", "60 dias antes de cada nova edição"],
+        ["Use o propósito para medir sucesso", "Defina um indicador simples ligado ao propósito (ex: número de decisões, não só número de presentes)", "Na fase de planejamento, antes do evento"],
+      ],
+    },
+  },
+
+  comunicacao: {
+    critico: {
+      label: "Crítico",
+      headline: "Sua divulgação está fazendo o evento ficar invisível.",
+      body: "Mesmo um evento excelente não enche a casa se ninguém souber dele a tempo.",
+      symptoms: [
+        "Divulgação concentrada nos últimos dias antes do evento",
+        "Apenas um canal de comunicação é usado, geralmente de forma isolada",
+        "Não existe um canal fixo onde as pessoas saibam que vão encontrar a agenda de eventos",
+      ],
+      plan: [
+        ["Crie um cronograma mínimo de divulgação", "Defina 3 momentos: anúncio (4 semanas antes), lembrete com detalhes (2 semanas antes) e contagem regressiva (última semana)", "Comece 4 semanas antes do evento"],
+        ["Centralize a informação em um canal fixo", "Escolha um canal (WhatsApp, Instagram ou newsletter) como “fonte oficial” e direcione todos os outros canais para ele", "Implemente antes do próximo evento, mantenha de forma contínua"],
+      ],
+    },
+    desenvolvimento: {
+      label: "Em Desenvolvimento",
+      headline: "Existe divulgação, mas ela é pontual.",
+      body: "Depende de lembrar de fazer, não de um processo consolidado.",
+      symptoms: [
+        "Um post de capa e pouco mais",
+        "Falta de conteúdo de bastidores que gere expectativa",
+        "Divulgação não tem dono fixo na equipe",
+      ],
+      plan: [
+        ["Nomeie um responsável por divulgação", "Defina uma pessoa (ou dupla) dona do calendário de posts, mesmo que seja voluntária", "Antes de iniciar o planejamento do próximo evento"],
+        ["Produza conteúdo de bastidores", "Grave 2-3 vídeos curtos de bastidores (preparação, equipe, convite pessoal de um líder) nas 2 semanas antes do evento", "Nas 2 semanas que antecedem o evento"],
+      ],
+    },
+    maduro: {
+      label: "Maduro",
+      headline: "Sua divulgação já funciona como um verdadeiro funil de expectativa.",
+      body: "O desafio agora é manter a consistência e não deixar a régua cair.",
+      symptoms: [
+        "Conteúdo planejado com semanas de antecedência",
+        "Canal fixo de comunicação estabelecido e conhecido pela comunidade",
+      ],
+      plan: [
+        ["Meça o que está funcionando", "Acompanhe quais formatos (vídeo, depoimento, convite pessoal) geram mais inscrições ou presença", "Após cada evento, em até 1 semana"],
+        ["Teste um novo formato por edição", "A cada novo evento, inclua um formato de divulgação ainda não testado (ex: depoimento em vídeo, parceria com influenciador local da igreja)", "A cada nova edição do evento"],
+      ],
+    },
+  },
+
+  experiencia: {
+    critico: {
+      label: "Crítico",
+      headline: "A experiência de quem chega está comprometendo a mensagem.",
+      body: "Por melhor que seja o conteúdo, desorganização na estrutura física afasta visitantes.",
+      symptoms: [
+        "Visitante não sabe onde sentar, estacionar ou o que vai acontecer",
+        "Não existe recepção ou sinalização para quem chega pela primeira vez",
+        "O evento estoura muito o tempo planejado",
+      ],
+      plan: [
+        ["Crie um checklist de experiência do visitante", "Percorra o caminho que um visitante faria — da entrada ao assento — e liste cada ponto que precisa de sinalização, recepção ou orientação", "2 semanas antes do evento"],
+        ["Monte uma equipe mínima de recepção", "Defina ao menos 2-3 pessoas só para acolher quem chega, com crachá ou identificação visível", "No dia do evento"],
+        ["Defina um roteiro com horários", "Estabeleça horário de início, fim e duração de cada bloco, e compartilhe com quem está à frente do palco", "1 semana antes do evento"],
+      ],
+    },
+    desenvolvimento: {
+      label: "Em Desenvolvimento",
+      headline: "A estrutura funciona, mas ainda depende de improviso.",
+      body: "Os detalhes ainda dependem de alguém “lembrar” de cuidar deles.",
+      symptoms: [
+        "Recepção existe, mas não é treinada nem padronizada",
+        "O evento costuma estourar um pouco do tempo",
+        "Boa experiência geral, mas sem encantamento",
+      ],
+      plan: [
+        ["Treine a equipe de recepção", "Faça um briefing de 15 minutos antes do evento orientando como cumprimentar, indicar caminhos e responder dúvidas comuns", "No dia do evento, antes da abertura"],
+        ["Defina um responsável pelo tempo", "Coloque uma pessoa com a função exclusiva de sinalizar os horários para quem está conduzindo o evento", "No dia do evento"],
+      ],
+    },
+    maduro: {
+      label: "Maduro",
+      headline: "Sua estrutura já entrega uma boa experiência.",
+      body: "O próximo passo é transformar o “bom” em “memorável”.",
+      symptoms: [
+        "Recepção treinada e sinalização clara",
+        "Tempo do evento é respeitado",
+      ],
+      plan: [
+        ["Crie um momento de encantamento", "Adicione um detalhe surpresa que gere comentário espontâneo (ex: brinde simples, mensagem personalizada para visitantes, café especial)", "Na fase de planejamento, antes do evento"],
+        ["Colete feedback estruturado da experiência", "Aplique uma pesquisa curta (2-3 perguntas) com participantes ao final do evento", "No encerramento do evento ou até 48h depois"],
+      ],
+    },
+  },
+
+  equipe: {
+    critico: {
+      label: "Crítico",
+      headline: "Sua equipe está operando no improviso.",
+      body: "Isso gera desgaste em quem serve e insegurança em quem participa.",
+      symptoms: [
+        "Ninguém sabe exatamente sua função no dia do evento",
+        "Imprevistos travam o evento até alguém decidir o que fazer",
+        "Não existe briefing antes do evento",
+      ],
+      plan: [
+        ["Crie uma escala de funções por escrito", "Liste cada função necessária (recepção, som, palco, infantil, estacionamento) e nomeie um responsável para cada uma", "2 semanas antes do evento"],
+        ["Faça um briefing obrigatório no dia", "Reúna toda a equipe 30-60 minutos antes da abertura para alinhar funções, horários e plano B para imprevistos comuns", "No dia do evento, antes da abertura"],
+      ],
+    },
+    desenvolvimento: {
+      label: "Em Desenvolvimento",
+      headline: "A equipe se vira bem, mas funciona mais como mutirão.",
+      body: "Falta um time com papéis verdadeiramente definidos.",
+      symptoms: [
+        "Todo mundo ajuda em tudo, sem dono claro de cada função",
+        "Briefing acontece, mas de forma informal",
+        "Imprevistos são resolvidos, mas de forma visível ao público",
+      ],
+      plan: [
+        ["Formalize o briefing", "Transforme o alinhamento informal em uma pauta curta e fixa (funções, horários, pontos de atenção)", "Antes de cada evento, de forma recorrente"],
+        ["Defina donos por área", "Mesmo mantendo o espírito de mutirão, nomeie um responsável final por cada área crítica (som, palco, recepção)", "Na fase de planejamento"],
+      ],
+    },
+    maduro: {
+      label: "Maduro",
+      headline: "Sua equipe já opera como um time treinado.",
+      body: "O próximo passo é criar continuidade e desenvolver novas lideranças.",
+      symptoms: [
+        "Funções claras e bem distribuídas",
+        "Imprevistos resolvidos discretamente",
+        "Briefing documentado e recorrente",
+      ],
+      plan: [
+        ["Crie um manual de funções", "Documente por escrito o passo a passo de cada função-chave, para facilitar o treinamento de novos voluntários", "Nos primeiros 30 dias após o próximo evento"],
+        ["Desenvolva substitutos para cada função-chave", "Para cada função crítica, tenha pelo menos uma segunda pessoa treinada como backup", "Ao longo do ciclo entre um evento e outro"],
+      ],
+    },
+  },
+
+  tecnologia: {
+    critico: {
+      label: "Crítico",
+      headline: "A parte técnica está gerando mais estresse do que suporte.",
+      body: "E isso normalmente é visível (e ouvível) para o público.",
+      symptoms: [
+        "Problemas de som recorrentes",
+        "Ausência de teste prévio de equipamentos",
+        "Nenhum registro do evento em foto ou vídeo",
+      ],
+      plan: [
+        ["Crie um checklist técnico", "Liste todos os equipamentos (microfones, caixas, projetor, internet) e teste cada um na véspera ou no dia, antes da abertura", "Na véspera ou na manhã do evento"],
+        ["Defina um responsável técnico fixo", "Nomeie uma pessoa (ou parceiro) responsável só pela parte técnica, com autonomia para resolver problemas durante o evento", "Antes de cada evento"],
+        ["Garanta ao menos um registro mínimo", "Peça para uma pessoa tirar fotos e gravar trechos-chave com o celular, mesmo sem equipe profissional", "No dia do evento"],
+      ],
+    },
+    desenvolvimento: {
+      label: "Em Desenvolvimento",
+      headline: "A parte técnica funciona, mas sempre tem um perrengue de última hora.",
+      body: "Algo que poderia ser evitado com mais planejamento.",
+      symptoms: [
+        "Testes acontecem em cima da hora",
+        "Registro do evento é informal, sem uso posterior do material",
+      ],
+      plan: [
+        ["Antecipe o teste técnico", "Faça o teste de som e equipamentos no mínimo 2 horas antes da abertura, não em cima da hora", "No dia do evento, com antecedência"],
+        ["Planeje o uso do material registrado", "Defina previamente o que será feito com fotos e vídeos (redes sociais, relatório, divulgação do próximo evento)", "Antes do evento, na fase de planejamento"],
+      ],
+    },
+    maduro: {
+      label: "Maduro",
+      headline: "Sua estrutura técnica já é um ponto forte.",
+      body: "O próximo passo é usar o material registrado de forma ainda mais estratégica.",
+      symptoms: [
+        "Testes prévios consistentes",
+        "Equipe dedicada a fotos e vídeos",
+      ],
+      plan: [
+        ["Reaproveite o conteúdo registrado", "Use trechos do evento para divulgar a próxima edição e para nutrir os canais de comunicação no intervalo entre eventos", "Na semana seguinte ao evento"],
+      ],
+    },
+  },
+
+  orcamento: {
+    critico: {
+      label: "Crítico",
+      headline: "O orçamento está sendo decidido no improviso.",
+      body: "Isso gera risco financeiro e desgaste de confiança com a liderança.",
+      symptoms: [
+        "Gastos não são planejados com antecedência",
+        "Não existe fonte de recursos definida para o evento",
+        "Dinheiro sai do caixa geral sem prestação de contas clara",
+      ],
+      plan: [
+        ["Monte um orçamento simples por escrito", "Liste todas as despesas previstas (estrutura, divulgação, alimentação, materiais) antes de iniciar qualquer compra", "Ao menos 30 dias antes do evento"],
+        ["Defina a fonte de recursos", "Escolha previamente como o evento será financiado (oferta específica, parceria, taxa de inscrição) em vez de decidir durante a execução", "Na fase de planejamento, antes da divulgação"],
+      ],
+    },
+    desenvolvimento: {
+      label: "Em Desenvolvimento",
+      headline: "Existe alguma organização financeira, mas falta previsibilidade.",
+      body: "O orçamento ainda é decidido conforme a necessidade aparece.",
+      symptoms: [
+        "Orçamento decidido conforme a necessidade surge",
+        "Captação de recursos aleatória",
+      ],
+      plan: [
+        ["Compare o planejado com o realizado", "Ao final do evento, registre quanto foi gasto em cada categoria e compare com o que foi planejado", "Até 1 semana após o evento"],
+        ["Estruture ao menos uma fonte fixa de recurso", "Escolha uma fonte principal (ex: inscrição simbólica) e use as demais como complementares", "Antes do próximo evento"],
+      ],
+    },
+    maduro: {
+      label: "Maduro",
+      headline: "O orçamento já é planejado e cumprido.",
+      body: "O próximo passo é otimizar o uso dos recursos.",
+      symptoms: [
+        "Orçamento estruturado e fontes de recursos claras",
+      ],
+      plan: [
+        ["Crie um histórico de custos por edição", "Mantenha um registro simples de gastos de cada evento para embasar decisões futuras", "Ao final de cada edição"],
+      ],
+    },
+  },
+
+  conversao: {
+    critico: {
+      label: "Crítico",
+      headline: "Este é, provavelmente, o gargalo mais caro do seu evento.",
+      body: "O esforço todo é feito para trazer pessoas, mas o fruto não é colhido depois.",
+      symptoms: [
+        "Visitantes somem sem nenhum contato posterior",
+        "Sucesso é medido só por quantidade de presentes",
+        "Não existe coleta de dados de quem participou",
+      ],
+      plan: [
+        ["Crie um formulário simples de cadastro", "Use um formulário curto (nome, contato, se é primeira visita) na entrada ou em algum momento do evento", "No dia do evento"],
+        ["Defina um fluxo mínimo de follow-up", "Estabeleça que todo visitante recebe uma mensagem de boas-vindas em até 48h após o evento", "Até 48 horas após o evento"],
+        ["Escolha um indicador além da presença", "Defina ao menos um número que represente fruto real (decisões, pedidos de oração, interesse em grupo pequeno)", "Antes do evento, na fase de planejamento"],
+      ],
+    },
+    desenvolvimento: {
+      label: "Em Desenvolvimento",
+      headline: "Existe alguma captação de dados, mas o pós-evento ainda não vira processo.",
+      body: "Falta estrutura para transformar contato em relacionamento contínuo.",
+      symptoms: [
+        "Boa impressão deixada, mas sem follow-up estruturado",
+        "Dados coletados ficam em listas sem uso",
+      ],
+      plan: [
+        ["Centralize os dados coletados", "Migre os contatos de listas soltas para uma planilha ou sistema único, com data e origem do evento", "Até 1 semana após o evento"],
+        ["Estruture um segundo contato", "Além da mensagem de boas-vindas, programe um convite para um próximo passo (grupo pequeno, próximo evento, conversa com líder)", "Entre 1 e 3 semanas após o evento"],
+      ],
+    },
+    maduro: {
+      label: "Maduro",
+      headline: "Seu evento já gera fruto que permanece.",
+      body: "O próximo passo é tornar esse processo ainda mais consistente e escalável.",
+      symptoms: [
+        "Follow-up estruturado com visitantes",
+        "Indicadores de fruto bem definidos",
+      ],
+      plan: [
+        ["Acompanhe a jornada de médio prazo", "Verifique, 60-90 dias depois, quantos visitantes seguem conectados à igreja/comunidade", "60 a 90 dias após o evento"],
+      ],
+    },
+  },
+
+  lideranca: {
+    critico: {
+      label: "Crítico",
+      headline: "O evento está sendo conduzido mais como projeto operacional.",
+      body: "E menos como um momento espiritual cuidado pela liderança.",
+      symptoms: [
+        "Liderança praticamente ausente do processo",
+        "Nenhum momento de oração específico para o evento",
+        "Nenhuma avaliação espiritual ou operacional depois",
+      ],
+      plan: [
+        ["Envolva a liderança desde o início", "Inclua ao menos um líder/pastor nas decisões-chave de planejamento, não só na execução", "Desde o início do planejamento"],
+        ["Crie um momento de oração da equipe", "Reserve 15-20 minutos antes do evento para a equipe orar junto, além do briefing operacional", "No dia do evento, antes da abertura"],
+        ["Faça uma avaliação pós-evento", "Reúna a equipe em até 1 semana para avaliar o que funcionou, o que travou e o que aprenderam espiritualmente", "Até 1 semana após o evento"],
+      ],
+    },
+    desenvolvimento: {
+      label: "Em Desenvolvimento",
+      headline: "Existe cuidado espiritual e acompanhamento, mas ainda pontual.",
+      body: "A presença da liderança e a preparação espiritual ainda não são constantes.",
+      symptoms: [
+        "Liderança presente só no dia do evento",
+        "Foco maior na logística do que na preparação espiritual da equipe",
+      ],
+      plan: [
+        ["Inclua a liderança no planejamento, não só na execução", "Convide o líder/pastor para ao menos uma reunião de planejamento antes do evento", "Antes da divulgação do evento"],
+        ["Formalize o momento de oração", "Inclua a oração da equipe como item fixo do briefing pré-evento", "Em todos os eventos"],
+      ],
+    },
+    maduro: {
+      label: "Maduro",
+      headline: "Seu evento já tem cuidado espiritual integrado à operação.",
+      body: "O próximo passo é aprofundar a cultura de avaliação contínua.",
+      symptoms: [
+        "Liderança envolvida do início ao fim",
+        "Momentos espirituais e avaliações pós-evento já fazem parte do processo",
+      ],
+      plan: [
+        ["Documente os aprendizados de cada edição", "Mantenha um registro simples dos aprendizados espirituais e operacionais de cada evento, para consultar na próxima edição", "Até 1 semana após cada evento"],
+      ],
+    },
+  },
+};
+
+// ============================================================
+// OS 6 PERFIS GERAIS
+// ============================================================
+
+const PROFILES = [
+  {
+    id: "uncao-sem-estrutura",
+    name: "Evento com Unção, mas sem Estrutura",
+    desc: "Seu evento tem o coração no lugar certo: propósito claro, liderança envolvida, ambiente de oração genuíno. O problema é que a estrutura por trás não está dando conta de sustentar essa intenção. É o tipo de evento em que as pessoas saem tocadas espiritualmente, mas comentam no caminho de casa sobre o atraso, a desorganização ou o perrengue do som.",
+    symptoms: [
+      "Momentos espirituais fortes, mas logística capenga",
+      "Equipe se esforça muito, mas sem papéis claros",
+      "Imprevistos técnicos ou de tempo se repetem a cada edição",
+    ],
+    plan: [
+      ["Crie uma escala de funções por escrito", "Liste cada função necessária e nomeie um responsável único para cada uma, evitando que “todo mundo faça um pouco de tudo”", "Comece já no planejamento do próximo evento, 3-4 semanas antes"],
+      ["Faça um checklist técnico e de tempo", "Teste equipamentos com antecedência e defina horários de início/fim de cada bloco, compartilhando com quem conduz o palco", "Na véspera e na manhã do evento"],
+      ["Preserve o que já funciona: o cuidado espiritual", "Mantenha o momento de oração da equipe antes do evento como prioridade inegociável, mesmo ao adicionar processos operacionais", "Em todos os eventos, sem exceção"],
+    ],
+    matches: (lv) => lv.proposito === "maduro" && lv.lideranca === "maduro" &&
+      (lv.experiencia === "critico" || lv.equipe === "critico" || lv.tecnologia === "critico"),
+  },
+  {
+    id: "organizado-sem-alma",
+    name: "Evento Organizado, mas sem Alma",
+    desc: "Tudo funciona como um relógio: horários certos, equipe afiada, estrutura impecável. Mas, quando alguém pergunta por que o evento existe, a resposta é vaga. Existe o risco real de o evento virar um produto bem executado, mas sem a profundidade espiritual que deveria sustentá-lo.",
+    symptoms: [
+      "Excelência operacional, mas propósito pouco claro",
+      "Liderança mais distante do processo espiritual do evento",
+      "Pouca oração ou preparação espiritual da equipe antes do evento",
+    ],
+    plan: [
+      ["Defina uma frase de propósito clara", "Reúna a liderança e responda: “se este evento não existisse, o que faltaria na vida das pessoas?” — transforme isso em uma frase única e compartilhada", "Antes de qualquer planejamento operacional do próximo evento"],
+      ["Reinsira a liderança no processo", "Convide o pastor/líder principal para acompanhar ao menos uma reunião de planejamento, não só o dia do evento", "Na fase inicial de planejamento"],
+      ["Crie um momento de oração da equipe", "Reserve 15-20 minutos antes do evento para a equipe orar junto, além do briefing operacional", "No dia do evento, antes da abertura"],
+    ],
+    matches: (lv) => lv.experiencia === "maduro" && lv.equipe === "maduro" && lv.tecnologia === "maduro" &&
+      (lv.proposito === "critico" || lv.lideranca === "critico"),
+  },
+  {
+    id: "aparece-nao-transforma",
+    name: "Evento que Aparece, mas Não Transforma",
+    desc: "Você sabe atrair gente. A divulgação funciona, a casa enche, mas o que acontece depois que as luzes se apagam é uma incógnita. Visitantes vêm, gostam, e somem — porque não existe nenhum processo pensado para os reter ou acompanhar.",
+    symptoms: [
+      "Boa presença de público a cada edição",
+      "Nenhuma coleta de dados de quem participou",
+      "Sucesso medido só por número de presentes, não por fruto",
+    ],
+    plan: [
+      ["Crie um formulário simples de cadastro de visitantes", "Use um formulário curto (nome, contato, se é primeira visita) em algum momento do evento", "No dia do evento"],
+      ["Defina um fluxo mínimo de follow-up", "Estabeleça que todo visitante recebe uma mensagem de boas-vindas em até 48h após o evento", "Até 48 horas após o evento"],
+      ["Escolha um indicador de fruto, além da presença", "Defina ao menos um número que represente transformação real (decisões, pedidos de oração, interesse em grupo pequeno)", "Antes do próximo evento, na fase de planejamento"],
+    ],
+    matches: (lv) => lv.comunicacao === "maduro" && lv.conversao === "critico",
+  },
+  {
+    id: "sustentado-por-poucos",
+    name: "Evento Sustentado por Poucos",
+    desc: "O evento até funciona, mas na base do sacrifício de duas ou três pessoas que fazem (quase) tudo. Funciona até cansar — e, quando essas pessoas saem de férias, adoecem ou simplesmente se esgotam, o evento inteiro treme.",
+    symptoms: [
+      "Poucas pessoas concentram a maioria das funções",
+      "Ausência de plano B para funções críticas",
+      "Equipe relata cansaço recorrente após cada edição",
+    ],
+    plan: [
+      ["Mapeie quem está sobrecarregado", "Liste todas as funções do evento e marque quais delas dependem de uma única pessoa", "Logo após o próximo evento, em até 1 semana"],
+      ["Recrute e treine substitutos", "Para cada função crítica identificada, convide e treine pelo menos uma segunda pessoa como backup", "No intervalo entre um evento e outro"],
+      ["Crie um manual simples de funções", "Documente o passo a passo de cada função-chave para facilitar a entrada de novos voluntários", "Nos primeiros 30 dias após o evento"],
+    ],
+    matches: (lv) => lv.equipe === "critico",
+  },
+  {
+    id: "iniciante-em-construcao",
+    name: "Evento Iniciante em Construção",
+    desc: "Vocês ainda estão construindo a base, e está tudo bem. Não existe um gargalo grave isolado, mas também nenhum eixo está consolidado. É o momento certo para criar bons hábitos antes que maus hábitos se tornem cultura.",
+    symptoms: [
+      "Pouca experiência prévia em organizar eventos do porte atual",
+      "Processos ainda informais em quase todas as áreas",
+      "Equipe motivada, mas sem rotinas estabelecidas",
+    ],
+    plan: [
+      ["Escolha 2 eixos para priorizar nesta edição", "Em vez de tentar resolver tudo de uma vez, escolha os 2 eixos com pontuação mais baixa neste diagnóstico e foque neles", "Logo após receber o diagnóstico, antes de iniciar o planejamento"],
+      ["Documente o que for decidido", "Crie um documento simples (pode ser uma planilha ou bloco de notas compartilhado) com propósito, escala de funções e cronograma de divulgação", "Durante o planejamento do próximo evento"],
+      ["Faça uma avaliação honesta pós-evento", "Reúna a equipe para registrar o que funcionou e o que travou, criando a base para a próxima edição", "Até 1 semana após o evento"],
+    ],
+    matches: (lv, levelsCount) => levelsCount.critico === 0 && levelsCount.maduro === 0,
+  },
+  {
+    id: "pronto-pra-voar",
+    name: "Evento Pronto pra Voar",
+    desc: "Parabéns: seu evento está em um nível raro de maturidade. Propósito, estrutura, equipe e espiritualidade caminham juntos. O risco, agora, não é a desorganização — é a acomodação. O próximo passo é refinar detalhes e pensar em escala e continuidade.",
+    symptoms: [
+      "Eixos consolidados, com poucos ou nenhum ponto crítico",
+      "Equipe e liderança alinhadas em propósito e execução",
+      "Bom histórico de fruto e retenção de visitantes",
+    ],
+    plan: [
+      ["Identifique o único elo mais fraco", "Releia os 8 mini raio-x deste diagnóstico e escolha o eixo com a menor pontuação para ser o foco de melhoria da próxima edição", "Logo após receber o diagnóstico"],
+      ["Documente o que funciona como case interno", "Registre os processos que estão dando certo para servir de referência a outras equipes ou ministérios da igreja", "Nos 30 dias após o evento"],
+      ["Pense em escala ou multiplicação", "Avalie se o modelo atual pode ser replicado em outras frentes (outro horário, outra unidade, outro formato) sem perder a qualidade", "No planejamento estratégico anual"],
+    ],
+    matches: (lv, levelsCount) => levelsCount.critico === 0 && levelsCount.desenvolvimento <= 1,
+  },
+];
+
+// Perfil padrão de fallback caso nenhuma regra específica bata
+const FALLBACK_PROFILE_BUILDER = (levelsCount) => {
+  if (levelsCount.critico >= 4) {
+    return {
+      id: "fallback-critico",
+      name: "Evento em Estado de Alerta",
+      desc: "Seu evento está enfrentando dificuldades em várias frentes ao mesmo tempo. A boa notícia é que isso também significa clareza: você já sabe, com este diagnóstico em mãos, exatamente onde focar primeiro para destravar o maior número de áreas de uma vez.",
+      symptoms: [
+        "Vários eixos pedem atenção simultânea",
+        "Risco de sobrecarga se todas as frentes forem atacadas ao mesmo tempo",
+        "Oportunidade de reconstruir a base com prioridades claras",
+      ],
+      plan: [
+        ["Escolha os 2 eixos mais críticos para começar", "Releia os mini raio-x abaixo e priorize os dois eixos com pontuação mais baixa", "Antes de iniciar o planejamento do próximo evento"],
+        ["Envolva a liderança na priorização", "Compartilhe este diagnóstico completo com quem lidera a igreja antes de decidir por onde começar", "Na próxima reunião de liderança"],
+        ["Construa um plano de 90 dias", "Defina metas pequenas e mensuráveis para os eixos prioritários, revisando a cada evento", "Nos próximos 90 dias"],
+      ],
+    };
+  }
+  return {
+    id: "fallback-misto",
+    name: "Evento em Transição",
+    desc: "Seu evento tem uma combinação própria de forças e gargalos — nem um padrão raro, nem um caso extremo. Isso é, na prática, a maioria das igrejas: alguns eixos já caminham bem, outros ainda pedem atenção. Use os 8 mini raio-x abaixo como seu roteiro de prioridades.",
+    symptoms: [
+      "Combinação mista de eixos maduros e em desenvolvimento",
+      "Nenhum padrão dominante isolado",
+      "Boa oportunidade de evolução direcionada",
+    ],
+    plan: [
+      ["Releia os 8 mini raio-x abaixo", "Identifique os eixos classificados como Crítico ou Em Desenvolvimento", "Logo após receber este diagnóstico"],
+      ["Escolha 1 eixo prioritário para a próxima edição", "Foque energia no eixo com menor pontuação antes de tentar mudar tudo de uma vez", "No planejamento do próximo evento"],
+      ["Agende uma reavaliação", "Refaça este raio-x depois do próximo evento para medir a evolução", "Após a próxima edição do evento"],
+    ],
+  };
+};
+
+</script>
+<script>
+// ============================================================
+// APP — Raio-X do seu Evento Cristão
+// ============================================================
+
+(function () {
+  "use strict";
+
+  const stage = document.getElementById("stage");
+  const progressFill = document.getElementById("progressFill");
+  const progressPct = document.getElementById("progressPct");
+
+  // answers[questionIndex] = { axis, points } or { text } or { choiceIndex }
+  const answers = new Array(QUESTIONS.length).fill(null);
+  let currentIndex = -1; // -1 = intro screen
+  let leadSubmitted = false;
+  const lead = { name: "", email: "", whatsapp: "" };
+
+  // total screens = 1 (intro) + QUESTIONS.length + 1 (lead) + 1 (result) = handled via currentIndex
+  const TOTAL_STEPS = QUESTIONS.length; // used for progress bar across questions only
+
+  function escapeHtml(str) {
+    const div = document.createElement("div");
+    div.textContent = str == null ? "" : String(str);
+    return div.innerHTML;
+  }
+
+  function updateProgress() {
+    let pct = 0;
+    if (currentIndex < 0) pct = 0;
+    else if (currentIndex >= TOTAL_STEPS) pct = 100;
+    else pct = Math.round(((currentIndex + 1) / (TOTAL_STEPS + 2)) * 100);
+    progressFill.style.width = pct + "%";
+    progressPct.textContent = pct + "%";
+  }
+
+  // ---------------------------------------------------------
+  // Render: Intro
+  // ---------------------------------------------------------
+  function renderIntro() {
+    stage.innerHTML = `
+      <div class="screen active">
+        <span class="intro-eyebrow">Diagnóstico gratuito · 7 minutos</span>
+        <h1 class="intro-title">Raio-X do <em>seu evento</em> cristão</h1>
+        <p class="intro-sub">22 perguntas rápidas para enxergar, com clareza, o que está sustentando — e o que está travando — o próximo evento da sua igreja. Sem enrolação, sem julgamento. Só um retrato honesto e um plano de ação.</p>
+
+        <div class="film-strip" aria-hidden="true">
+          ${AXES.map(() => "<span></span>").join("")}
+        </div>
+
+        <div class="intro-meta">
+          <div class="meta-item"><b>8</b>eixos avaliados</div>
+          <div class="meta-item"><b>22</b>perguntas objetivas</div>
+          <div class="meta-item"><b>6</b>perfis possíveis</div>
+          <div class="meta-item"><b>~7min</b>para concluir</div>
+        </div>
+
+        <button class="btn btn-primary" id="startBtn">Começar meu diagnóstico →</button>
+      </div>
+    `;
+    document.getElementById("startBtn").addEventListener("click", () => {
+      currentIndex = 0;
+      renderQuestion();
+    });
+    updateProgress();
+  }
+
+  // ---------------------------------------------------------
+  // Render: Question (choice or text)
+  // ---------------------------------------------------------
+  function renderQuestion() {
+    const q = QUESTIONS[currentIndex];
+    const axisMeta = q.axis ? AXES.find((a) => a.id === q.axis) : null;
+    const axisNumber = axisMeta ? AXES.findIndex((a) => a.id === q.axis) + 1 : null;
+
+    let kicker = "";
+    if (axisMeta) {
+      kicker = `Eixo ${axisNumber} de 8 · ${axisMeta.short}`;
+    } else if (q.id === "open1" || q.id === "context1") {
+      kicker = "Abertura";
+    } else {
+      kicker = "Fechamento";
+    }
+
+    let bodyHtml = "";
+    if (q.type === "choice") {
+      const saved = answers[currentIndex];
+      bodyHtml = `
+        <div class="options" role="group" aria-label="${escapeHtml(q.title)}">
+          ${q.options
+            .map((opt, i) => {
+              const selected = saved && saved.choiceIndex === i ? "selected" : "";
+              return `<button type="button" class="option ${selected}" data-index="${i}">
+                <span class="option-dot"></span><span>${escapeHtml(opt)}</span>
+              </button>`;
+            })
+            .join("")}
+        </div>
+      `;
+    } else {
+      const savedText = answers[currentIndex] ? answers[currentIndex].text : "";
+      bodyHtml = `<textarea class="text-input" id="textAnswer" placeholder="${escapeHtml(
+        q.placeholder || "Escreva aqui..."
+      )}">${escapeHtml(savedText)}</textarea>`;
+    }
+
+    stage.innerHTML = `
+      <div class="screen active">
+        <div class="q-kicker">${kicker}</div>
+        <h2 class="q-title">${escapeHtml(q.title)}</h2>
+        ${bodyHtml}
+        <div class="nav-row">
+          <button class="btn btn-ghost" id="backBtn">${currentIndex === 0 ? "" : "← Voltar"}</button>
+          <button class="btn btn-primary" id="nextBtn" ${q.type === "text" ? "" : "disabled"}>
+            ${currentIndex === QUESTIONS.length - 1 ? "Ver meu diagnóstico →" : "Próxima →"}
+          </button>
+        </div>
+      </div>
+    `;
+
+    if (currentIndex === 0) {
+      const backBtn = document.getElementById("backBtn");
+      backBtn.style.visibility = "hidden";
+    } else {
+      document.getElementById("backBtn").addEventListener("click", goBack);
+    }
+
+    const nextBtn = document.getElementById("nextBtn");
+
+    if (q.type === "choice") {
+      const optionEls = stage.querySelectorAll(".option");
+      optionEls.forEach((el) => {
+        el.addEventListener("click", () => {
+          optionEls.forEach((o) => o.classList.remove("selected"));
+          el.classList.add("selected");
+          const idx = parseInt(el.dataset.index, 10);
+          const points = q.scored === false ? null : 3 - idx; // first=3, second=2, third=1
+          answers[currentIndex] = { choiceIndex: idx, axis: q.axis, points: points };
+          nextBtn.disabled = false;
+        });
+      });
+    } else {
+      const textarea = document.getElementById("textAnswer");
+      const checkText = () => {
+        nextBtn.disabled = textarea.value.trim().length === 0;
+        answers[currentIndex] = { text: textarea.value };
+      };
+      textarea.addEventListener("input", checkText);
+      checkText();
+    }
+
+    nextBtn.addEventListener("click", goNext);
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function goNext() {
+    if (currentIndex < QUESTIONS.length - 1) {
+      currentIndex += 1;
+      renderQuestion();
+    } else {
+      currentIndex = QUESTIONS.length; // lead capture screen marker
+      renderLeadCapture();
+    }
+  }
+
+  function goBack() {
+    if (currentIndex > 0) {
+      currentIndex -= 1;
+      renderQuestion();
+    } else {
+      currentIndex = -1;
+      renderIntro();
+    }
+  }
+
+  // ---------------------------------------------------------
+  // Scoring
+  // ---------------------------------------------------------
+  function computeAxisLevels() {
+    const sums = {};
+    const counts = {};
+    AXES.forEach((a) => {
+      sums[a.id] = 0;
+      counts[a.id] = 0;
+    });
+
+    answers.forEach((ans, i) => {
+      const q = QUESTIONS[i];
+      if (q.type === "choice" && q.axis && ans && typeof ans.points === "number") {
+        sums[q.axis] += ans.points;
+        counts[q.axis] += 1;
+      }
+    });
+
+    const averages = {};
+    const levels = {};
+    AXES.forEach((a) => {
+      const avg = counts[a.id] > 0 ? sums[a.id] / counts[a.id] : 0;
+      averages[a.id] = avg;
+      if (avg >= 2.4) levels[a.id] = "maduro";
+      else if (avg >= 1.7) levels[a.id] = "desenvolvimento";
+      else levels[a.id] = "critico";
+    });
+
+    const levelsCount = { critico: 0, desenvolvimento: 0, maduro: 0 };
+    Object.values(levels).forEach((lv) => levelsCount[lv]++);
+
+    return { averages, levels, levelsCount };
+  }
+
+  function pickProfile(levels, levelsCount) {
+    for (const profile of PROFILES) {
+      try {
+        if (profile.matches(levels, levelsCount)) return profile;
+      } catch (e) {
+        /* ignore */
+      }
+    }
+    return FALLBACK_PROFILE_BUILDER(levelsCount);
+  }
+
+  // ---------------------------------------------------------
+  // Render: Lead capture
+  // ---------------------------------------------------------
+  function renderLeadCapture() {
+    stage.innerHTML = `
+      <div class="screen active">
+        <div class="lead-card">
+          <div class="axis-tag">Diagnóstico concluído</div>
+          <h2 class="lead-title">Seu diagnóstico está pronto! Preencha os campos abaixo para acessar.*</h2>
+          <p class="lead-sub">Seu perfil geral e os 8 mini raio-x do seu evento já foram calculados. Só falta isso para você ver o resultado completo.</p>
+
+          <div class="field" id="field-name">
+            <label for="inputName">Nome*</label>
+            <input type="text" id="inputName" placeholder="Seu nome completo" autocomplete="name" value="${escapeHtml(lead.name)}">
+            <div class="field-error">Digite seu nome.</div>
+          </div>
+
+          <div class="field" id="field-email">
+            <label for="inputEmail">E-mail*</label>
+            <input type="email" id="inputEmail" placeholder="voce@email.com" autocomplete="email" value="${escapeHtml(lead.email)}">
+            <div class="field-error">Digite um e-mail válido.</div>
+          </div>
+
+          <div class="field" id="field-whatsapp">
+            <label for="inputWhatsapp">WhatsApp*</label>
+            <input type="tel" id="inputWhatsapp" placeholder="(00) 00000-0000" autocomplete="tel" value="${escapeHtml(lead.whatsapp)}">
+            <div class="field-error">Digite um número de WhatsApp válido.</div>
+          </div>
+
+          <button class="btn btn-primary" id="revealBtn" style="width:100%; justify-content:center; margin-top:8px;">Ver meu diagnóstico completo →</button>
+          <p class="lead-privacy">Seus dados são usados apenas para enviar seu diagnóstico e um eventual contato sobre como aplicá-lo. Nada de spam.</p>
+        </div>
+
+        <div class="nav-row" style="margin-top:18px;">
+          <button class="btn btn-ghost" id="backBtn">← Voltar às perguntas</button>
+          <span></span>
+        </div>
+      </div>
+    `;
+
+    document.getElementById("backBtn").addEventListener("click", () => {
+      currentIndex = QUESTIONS.length - 1;
+      renderQuestion();
+    });
+
+    document.getElementById("revealBtn").addEventListener("click", validateAndReveal);
+
+    // Enter key submits
+    ["inputName", "inputEmail", "inputWhatsapp"].forEach((id) => {
+      document.getElementById(id).addEventListener("keydown", (e) => {
+        if (e.key === "Enter") validateAndReveal();
+      });
+    });
+
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function isValidEmail(value) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+  }
+
+  function isValidWhatsapp(value) {
+    const digits = value.replace(/\D/g, "");
+    return digits.length >= 10 && digits.length <= 13;
+  }
+
+  function validateAndReveal() {
+    const nameEl = document.getElementById("inputName");
+    const emailEl = document.getElementById("inputEmail");
+    const waEl = document.getElementById("inputWhatsapp");
+
+    const nameVal = nameEl.value.trim();
+    const emailVal = emailEl.value.trim();
+    const waVal = waEl.value.trim();
+
+    let valid = true;
+
+    const nameField = document.getElementById("field-name");
+    if (nameVal.length < 2) {
+      nameField.classList.add("invalid");
+      valid = false;
+    } else {
+      nameField.classList.remove("invalid");
+    }
+
+    const emailField = document.getElementById("field-email");
+    if (!isValidEmail(emailVal)) {
+      emailField.classList.add("invalid");
+      valid = false;
+    } else {
+      emailField.classList.remove("invalid");
+    }
+
+    const waField = document.getElementById("field-whatsapp");
+    if (!isValidWhatsapp(waVal)) {
+      waField.classList.add("invalid");
+      valid = false;
+    } else {
+      waField.classList.remove("invalid");
+    }
+
+    if (!valid) return;
+
+    lead.name = nameVal;
+    lead.email = emailVal;
+    lead.whatsapp = waVal;
+    leadSubmitted = true;
+
+    currentIndex = QUESTIONS.length + 1;
+    renderResult();
+  }
+
+  // ---------------------------------------------------------
+  // Render: Result
+  // ---------------------------------------------------------
+  function renderResult() {
+    if (!leadSubmitted) {
+      currentIndex = QUESTIONS.length;
+      renderLeadCapture();
+      return;
+    }
+
+    const { averages, levels, levelsCount } = computeAxisLevels();
+    const profile = pickProfile(levels, levelsCount);
+    const firstName = lead.name.trim().split(/\s+/)[0];
+
+    const axesRowsHtml = AXES.map((a, idx) => {
+      const lv = levels[a.id];
+      const diag = AXIS_DIAGNOSIS[a.id][lv];
+      const statusClass = "status-" + lv;
+      const planRows = diag.plan
+        .map(
+          (row) => `
+        <tr>
+          <td>${escapeHtml(row[0])}</td>
+          <td>${escapeHtml(row[1])}</td>
+          <td>${escapeHtml(row[2])}</td>
+        </tr>`
+        )
+        .join("");
+
+      return `
+        <div class="axis-row" data-axis="${a.id}">
+          <span class="axis-row-num">${String(idx + 1).padStart(2, "0")}</span>
+          <span class="axis-row-name">${escapeHtml(a.name)} <span class="chev">›</span></span>
+          <span class="axis-row-status ${statusClass}">${diag.label}</span>
+          <div class="axis-detail">
+            <p><strong>${escapeHtml(diag.headline)}</strong> ${escapeHtml(diag.body)}</p>
+            <p style="margin-bottom:6px;"><strong>Sintomas comuns:</strong></p>
+            <ul class="profile-symptoms" style="margin-bottom:18px;">
+              ${diag.symptoms.map((s) => `<li>${escapeHtml(s)}</li>`).join("")}
+            </ul>
+            <p style="margin-bottom:6px;"><strong>Plano de ação:</strong></p>
+            <table class="plan-table">
+              <thead><tr><th>O que fazer</th><th>Como fazer</th><th>Quando fazer</th></tr></thead>
+              <tbody>${planRows}</tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    const profilePlanRows = profile.plan
+      .map(
+        (row) => `
+      <tr>
+        <td>${escapeHtml(row[0])}</td>
+        <td>${escapeHtml(row[1])}</td>
+        <td>${escapeHtml(row[2])}</td>
+      </tr>`
+      )
+      .join("");
+
+    stage.innerHTML = `
+      <div class="screen active">
+        <div class="result-header">
+          <div class="section-label">Diagnóstico de ${escapeHtml(firstName || "você")}</div>
+        </div>
+
+        <div class="profile-card">
+          <div class="profile-eyebrow">Perfil geral do seu evento</div>
+          <h2 class="profile-name">${escapeHtml(profile.name)}</h2>
+          <p class="profile-desc">${escapeHtml(profile.desc)}</p>
+          <ul class="profile-symptoms">
+            ${profile.symptoms.map((s) => `<li>${escapeHtml(s)}</li>`).join("")}
+          </ul>
+        </div>
+
+        <div class="section-label">Plano de ação prioritário</div>
+        <table class="plan-table" style="margin-bottom:44px;">
+          <thead><tr><th>O que fazer</th><th>Como fazer</th><th>Quando fazer</th></tr></thead>
+          <tbody>${profilePlanRows}</tbody>
+        </table>
+
+        <div class="section-label">Os 8 mini raio-x do seu evento — toque para abrir o plano de cada eixo</div>
+        <div class="axes-grid">
+          ${axesRowsHtml}
+        </div>
+
+        <div class="footer-note">
+          Raio-X do seu Evento Cristão · diagnóstico gerado para ${escapeHtml(lead.email)}
+        </div>
+      </div>
+    `;
+
+    stage.querySelectorAll(".axis-row").forEach((row) => {
+      row.addEventListener("click", () => {
+        row.classList.toggle("open");
+      });
+    });
+
+    currentIndex = QUESTIONS.length + 1;
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  // ---------------------------------------------------------
+  // Init
+  // ---------------------------------------------------------
+  renderIntro();
+})();
+
+</script>
+</body>
+</html>

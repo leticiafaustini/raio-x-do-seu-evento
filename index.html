@@ -1370,6 +1370,75 @@ const FALLBACK_PROFILE_BUILDER = (levelsCount) => {
 (function () {
   "use strict";
 
+  // ============================================================
+  // CONFIGURAÇÃO DO HUBSPOT
+  // ============================================================
+  // Troque os valores abaixo pelos dados do seu formulário no HubSpot.
+  // Portal ID: Configurações > Contas e Faturamento > Detalhes da Conta
+  // Form GUID: Marketing > Formulários > [seu formulário] > Compartilhar > Incorporar código
+  const HUBSPOT_CONFIG = {
+    portalId: "49424759",
+    formGuid: "6ac88aad-7635-4e70-8197-3756c791f06f",
+    // Nomes internos dos campos no HubSpot. Ajuste se o seu formulário usar nomes diferentes.
+    fieldNames: {
+      name: "firstname",
+      email: "email",
+      whatsapp: "phone",
+    },
+  };
+
+  function getHubspotCookie() {
+    const match = document.cookie.match(/(?:^|;\s*)hubspotutk=([^;]+)/);
+    return match ? match[1] : null;
+  }
+
+  function sendLeadToHubSpot(leadData) {
+    if (
+      !HUBSPOT_CONFIG.portalId ||
+      HUBSPOT_CONFIG.portalId === "SEU_PORTAL_ID" ||
+      !HUBSPOT_CONFIG.formGuid ||
+      HUBSPOT_CONFIG.formGuid === "SEU_FORM_GUID"
+    ) {
+      console.warn("HubSpot não configurado: preencha HUBSPOT_CONFIG.portalId e formGuid.");
+      return;
+    }
+
+    const endpoint = `https://api.hsforms.com/submissions/v3/integration/submit/${HUBSPOT_CONFIG.portalId}/${HUBSPOT_CONFIG.formGuid}`;
+
+    const payload = {
+      fields: [
+        { name: HUBSPOT_CONFIG.fieldNames.name, value: leadData.name },
+        { name: HUBSPOT_CONFIG.fieldNames.email, value: leadData.email },
+        { name: HUBSPOT_CONFIG.fieldNames.whatsapp, value: leadData.whatsapp },
+      ],
+      context: {
+        pageUri: window.location.href,
+        pageName: document.title,
+      },
+    };
+
+    const hutk = getHubspotCookie();
+    if (hutk) {
+      payload.context.hutk = hutk;
+    }
+
+    fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          return res.json().then((err) => {
+            console.error("Erro ao enviar lead para o HubSpot:", err);
+          });
+        }
+      })
+      .catch((err) => {
+        console.error("Falha de rede ao enviar lead para o HubSpot:", err);
+      });
+  }
+
   const stage = document.getElementById("stage");
   const progressFill = document.getElementById("progressFill");
   const progressPct = document.getElementById("progressPct");
@@ -1692,6 +1761,8 @@ const FALLBACK_PROFILE_BUILDER = (levelsCount) => {
     lead.email = emailVal;
     lead.whatsapp = waVal;
     leadSubmitted = true;
+
+    sendLeadToHubSpot(lead);
 
     currentIndex = QUESTIONS.length + 1;
     renderResult();
